@@ -29,19 +29,19 @@ class ProjectPath:
         project = project or caller_root.name
         root_dir = Path(root_dir).expanduser().resolve() if root_dir else caller_root
 
-        self.PROJ = root_dir if root_dir.name == project else root_dir / project
+        self.PROJ_PATH = root_dir if root_dir.name == project else root_dir / project
 
-        self.WORK = self.PROJ / "work"
-        self.DATA = self.PROJ / "data"
-        self.TEMP = self.PROJ / "temp"
-        self.LOG = self.PROJ / "log"
-        self.LLM = self.DATA / "Llama3"
+        self.WORK_PATH = self.PROJ_PATH / "work"
+        self.DATA_PATH = self.PROJ_PATH / "data"
+        self.TEMP_PATH = self.PROJ_PATH / "temp"
+        self.LOG_PATH = self.PROJ_PATH / "log"
+        self.LLM_PATH = "~/LLM"
 
-        for p in (self.WORK, self.DATA, self.LOG):
+        for p in (self.WORK_PATH, self.DATA_PATH, self.LOG_PATH):
             p.mkdir(parents=True, exist_ok=True)
-        if fresh_temp and self.TEMP.exists():
-            shutil.rmtree(self.TEMP)
-        self.TEMP.mkdir(exist_ok=True)
+        if fresh_temp and self.TEMP_PATH.exists():
+            shutil.rmtree(self.TEMP_PATH)
+        self.TEMP_PATH.mkdir(exist_ok=True)
 
         self._ready = True
         self._announce(project)
