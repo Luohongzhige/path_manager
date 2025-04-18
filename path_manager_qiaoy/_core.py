@@ -29,8 +29,7 @@ class ProjectPath:
         project = project or caller_root.name
         root_dir = Path(root_dir).expanduser().resolve() if root_dir else caller_root
 
-        self.PROJ_PATH = root_dir if root_dir.name == project else root_dir / project
-
+        self.PROJ_PATH = Path(root_dir).expanduser().resolve().parent
         self.WORK_PATH = self.PROJ_PATH / "work"
         self.DATA_PATH = self.PROJ_PATH / "data"
         self.TEMP_PATH = self.PROJ_PATH / "temp"
