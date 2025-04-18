@@ -59,7 +59,7 @@ class ProjectPath:
         print(f"{c.RED}{'-'*60}{c.END}")
         print(f"Path initialized for {c.GREEN}{proj_name}{c.END}")
         for attr in ("PROJ", "WORK", "DATA", "TEMP", "LOG", "LLM"):
-            print(f"{attr:<5}: {c.BLUE}{getattr(self, attr)}{c.END}")
+            print(f"{attr:<5}: {c.BLUE}{getattr(self, attr+'_PATH')}{c.END}")
         print(f"{c.RED}{'-'*60}{c.END}")
 
     def __getattr__(self, item):
