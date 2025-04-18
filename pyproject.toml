@@ -19,3 +19,6 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/qiaoyi/path_manager"
+
+[tool.setuptools]
+packages = ["path_manager_qiaoy"]
