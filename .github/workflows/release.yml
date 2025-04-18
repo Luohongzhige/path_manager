@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build and Publish to TestPyPI
 
 on:
   push:
@@ -9,10 +9,10 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -20,26 +20,25 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install build dependencies
-        run: python -m pip install --upgrade build
-
-      - name: Build package
-        run: python -m build
-
-      - name: Upload release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            dist/*.whl
-            dist/*.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload to Test PyPI
+      - name: Install build tools
         run: |
-          python -m pip install --upgrade twine
-          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+          python -m pip install --upgrade pip
+          pip install build twine
+
+      - name: Build distribution
+        run: |
+          rm -rf dist/
+          python -m build
+
+      - name: Publish to TestPyPI
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_TOKEN }}
+        run: |
+          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
+      - name: Test installation from TestPyPI
+        run: |
+          pip uninstall -y path-manager-qiaoy || true
+          pip install -i https://test.pypi.org/simple/ path-manager-qiaoy
+          python -c "from path_manager_qiaoy import PATH; print(PATH)"
