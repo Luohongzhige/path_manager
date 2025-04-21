@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from pathlib import Path
 
 def main():
@@ -18,5 +18,8 @@ def main():
             f.write('PATH.init()\n')
         print(f"✅ Project '{proj_name}' initialized at {base_path}")
         print(f"📝 Created: {start_py}")
+        #run the start.py script
+        os.system(f"python {start_py}")
+        print(f"Run the script with: python {start_py}")
     except FileExistsError:
         print(f"⚠️ Project '{proj_name}' already exists at {base_path}")
