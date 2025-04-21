@@ -17,10 +17,21 @@ def main():
             f.write('from path_manager_qiaoy import PATH\n')
             f.write('PATH.init()\n')
             f.write('print("Project initialized successfully!")\n')
+
+        print("------------------------------------------------------------")
         print(f"✅ Project '{proj_name}' initialized at {base_path}")
         print(f"📝 Created: {start_py}")
-        #run the start.py script
-        os.system(f"python {start_py}")
-        print(f"Run the script with: python {start_py}")
+        print("🔄 Executing project setup via start.py...")
+        print("------------------------------------------------------------")
+
+        result = os.system(f"python {start_py}")
+        if result != 0:
+            print(f"❌ Failed to execute {start_py}")
+            print(f"⚠️  Please manually run: python {start_py}")
+            sys.exit(result)
+        else:
+            print("✅ start.py executed successfully.")
+
     except FileExistsError:
         print(f"⚠️ Project '{proj_name}' already exists at {base_path}")
+        sys.exit(1)
