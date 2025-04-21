@@ -5,7 +5,7 @@ A unified project directory helper with smart detection and folder creation.
 ```python
 from path_manager import PATH
 PATH.init()
-print(PATH.DATA)
+print(PATH.DATA_PATH)
 ```
 
 ---
@@ -15,16 +15,11 @@ print(PATH.DATA)
 - Creates `work/`, `data/`, `log/`, `temp/` folders under your project root.
 
 ---
+# Download and Install
 
-## Release
-Push a tag like `v0.1.0` to trigger a release build:
+use `pip install -i https://test.pypi.org/simple/ path-manager-qiaoy` to download the lastest version from TestPyPI.
 
-```bash
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-The GitHub Action will build and attach a `.whl` and `.tar.gz` to the release.
+run `proj init {your_proj_name}` to init a project
 
 # === LICENSE ===
 MIT License
