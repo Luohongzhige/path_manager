@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "path-manager-qiaoy"
-version = "1.1.3"
+version = "2.0.0"
 description = "Unified project directory helper with auto‑detection."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -22,3 +22,6 @@ Homepage = "https://github.com/qiaoyi/path_manager"
 
 [tool.setuptools]
 packages = ["path_manager_qiaoy"]
+
+[project.scripts]
+proj = "path_manager_qiaoy.cli:main"

@@ -34,7 +34,7 @@ class ProjectPath:
         self.DATA_PATH = self.PROJ_PATH / "data"
         self.TEMP_PATH = self.PROJ_PATH / "temp"
         self.LOG_PATH = self.PROJ_PATH / "log"
-        self.LLM_PATH = "~/LLM"
+        self.LLM_PATH = Path("~/LLM").expanduser().resolve()
 
         for p in (self.WORK_PATH, self.DATA_PATH, self.LOG_PATH):
             p.mkdir(parents=True, exist_ok=True)
