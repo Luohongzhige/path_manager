@@ -1,28 +1,26 @@
 #!/bin/bash
+set -e
 
-# 用法: ./release.sh v0.1.2 "说明文字"
+# 获取版本号
+VERSION=$(grep '^version *= *' pyproject.toml | sed -E 's/version *= *"([^"]+)"/\1/')
+TAG="v$VERSION"
 
-# 检查参数
-if [ $# -lt 1 ]; then
-  echo "❗ 用法: $0 <version_tag> [message]"
+echo "🏷️  当前版本为: $VERSION"
+echo "🏷️  准备打 tag: $TAG"
+
+# 确保 tag 不存在
+if git rev-parse "$TAG" >/dev/null 2>&1; then
+  echo "❌ Tag $TAG 已存在，发布失败"
   exit 1
 fi
 
-TAG=$1
-MESSAGE=${2:-"Release $TAG"}
+# 添加更改并提交（可选）
+git add -A
+git commit -m "release: $TAG" || echo "⚠️ 无需提交"
 
-# 删除旧 tag（本地 + 远程）
-echo "🧹 删除旧 tag（如果存在）..."
-git tag -d $TAG 2>/dev/null
-git push origin :refs/tags/$TAG 2>/dev/null
-
-# 添加新的 tag
-echo "🏷️  创建新 tag: $TAG"
-git tag -a $TAG -m "$MESSAGE"
-
-# 推送 tag，触发 GitHub Actions
-echo "🚀 推送 tag 到远程，触发 GitHub Actions..."
+# 打 tag 并推送
+git tag $TAG
+git push origin main
 git push origin $TAG
 
-echo "✅ 完成！请稍等几分钟，在 GitHub Releases 页面查看构建结果："
-echo "   https://github.com/$(git remote get-url origin | sed -E 's#.*github.com[:/](.+)\.git#\1#')/releases/tag/$TAG"
+echo "✅ 发布成功，tag: $TAG"

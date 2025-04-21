@@ -42,3 +42,9 @@ jobs:
           pip uninstall -y path-manager-qiaoy || true
           pip install -i https://test.pypi.org/simple/ path-manager-qiaoy
           python -c "from path_manager_qiaoy import PATH; print(PATH)"
+
+      - name: ✅ Test CLI proj init
+        run: |
+          proj init my_test_proj
+          test -f my_test_proj/work/start.py
+          grep -q 'print("Project initialized successfully!")' my_test_proj/work/start.py

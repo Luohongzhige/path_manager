@@ -16,6 +16,7 @@ def main():
         with open(start_py, 'w') as f:
             f.write('from path_manager_qiaoy import PATH\n')
             f.write('PATH.init()\n')
+            f.write('print("Project initialized successfully!")\n')
         print(f"✅ Project '{proj_name}' initialized at {base_path}")
         print(f"📝 Created: {start_py}")
         #run the start.py script
