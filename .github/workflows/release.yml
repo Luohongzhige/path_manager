@@ -14,7 +14,14 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-
+      
+      - name: 🧠 Extract version from pyproject.toml
+        id: version
+        run: |
+          version=$(grep '^version *= *' pyproject.toml | sed -E 's/version *= *"([^"]+)"/\1/')
+          echo "📦 Extracted version: $version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+        
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -37,11 +44,37 @@ jobs:
         run: |
           twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-      - name: Test installation from TestPyPI
-        run: |
-          pip uninstall -y path-manager-qiaoy || true
-          pip install -i https://test.pypi.org/simple/ path-manager-qiaoy
-          python -c "from path_manager_qiaoy import PATH; print(PATH)"
+          - name: 📦 Retry install from TestPyPI until expected version
+          run: |
+            set -e
+  
+            EXPECTED_VERSION="${{ steps.version.outputs.version }}"
+            echo "🧠 Expecting to install version: $EXPECTED_VERSION"
+  
+            for i in {1..5}; do
+              echo "🔁 Attempt $i to install path-manager-qiaoy..."
+              pip uninstall -y path-manager-qiaoy || true
+              pip install --no-cache-dir -i https://test.pypi.org/simple/ path-manager-qiaoy
+  
+              INSTALLED_VERSION=$(pip show path-manager-qiaoy | grep ^Version: | cut -d' ' -f2)
+              echo "📦 Installed version: $INSTALLED_VERSION"
+  
+              if [[ "$INSTALLED_VERSION" == "$EXPECTED_VERSION" ]]; then
+                echo "✅ Version match! Installed: $INSTALLED_VERSION"
+                break
+              fi
+  
+              echo "⏳ Version mismatch. Expecting $EXPECTED_VERSION but got $INSTALLED_VERSION"
+              echo "⏱️ Waiting 15 seconds before retry..."
+              sleep 15
+            done
+  
+            # Final check
+            FINAL_VERSION=$(pip show path-manager-qiaoy | grep ^Version: | cut -d' ' -f2)
+            if [[ "$FINAL_VERSION" != "$EXPECTED_VERSION" ]]; then
+              echo "❌ Still not the expected version after 5 attempts!"
+              exit 1
+            fi
 
       - name: ✅ Test CLI proj init
         run: |
