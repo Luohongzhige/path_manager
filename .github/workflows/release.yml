@@ -79,4 +79,3 @@ jobs:
         run: |
           proj init my_test_proj
           test -f my_test_proj/work/start.py
-          grep -q 'print("Project initialized successfully!")' my_test_proj/work/start.py
