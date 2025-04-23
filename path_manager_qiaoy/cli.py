@@ -14,9 +14,9 @@ def main():
     try:
         work_path.mkdir(parents=True, exist_ok=False)
         with open(start_py, 'w') as f:
-            f.write('from path_manager_qiaoy import PATH\n')
+            f.write('from path_manager_qiaoy import ProjectPath\n')
+            f.write('PATH = ProjectPath()\n')
             f.write('PATH.init()\n')
-            f.write('print("Project initialized successfully!")\n')
 
         print("------------------------------------------------------------")
         print(f"✅ Project '{proj_name}' initialized at {base_path}")

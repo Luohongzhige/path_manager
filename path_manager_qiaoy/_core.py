@@ -67,7 +67,3 @@ class ProjectPath:
         if item in self.__dict__:
             return self.__dict__[item]
         raise AttributeError(item)
-
-
-# 单例
-PATH = ProjectPath()
