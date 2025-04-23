@@ -31,6 +31,7 @@ def main():
             sys.exit(result)
         else:
             print("✅ start.py executed successfully.")
+            sys.exit(0)
 
     except FileExistsError:
         print(f"⚠️ Project '{proj_name}' already exists at {base_path}")
