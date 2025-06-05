@@ -21,15 +21,17 @@ class ProjectPath:
 
     def init(
         self,
-        project: Optional[str] = None,
         root_dir: Optional[str | Path] = None,
         fresh_temp: bool = True,
     ):
-        caller_root = self._caller_dir()
-        project = project or caller_root.name
-        root_dir = Path(root_dir).expanduser().resolve() if root_dir else caller_root
-
-        self.PROJ_PATH = Path(root_dir).expanduser().resolve().parent
+        if root_dir is not None:
+            root_dir = Path(root_dir).expanduser().resolve()
+            proj_root = self._find_work_root(root_dir)
+        else:
+            caller_dir = self._caller_dir()
+            proj_root = self._find_work_root(caller_dir)
+        
+        self.PROJ_PATH = proj_root
         self.WORK_PATH = self.PROJ_PATH / "work"
         self.DATA_PATH = self.PROJ_PATH / "data"
         self.TEMP_PATH = self.PROJ_PATH / "temp"
@@ -43,7 +45,8 @@ class ProjectPath:
         self.TEMP_PATH.mkdir(exist_ok=True)
 
         self._ready = True
-        self._announce(project)
+        self._announce(proj_root.name)
+
 
     def _caller_dir(self) -> Path:
         this_file = Path(__file__).resolve()
@@ -67,3 +70,12 @@ class ProjectPath:
         if item in self.__dict__:
             return self.__dict__[item]
         raise AttributeError(item)
+
+    def _find_work_root(self, start_path: Path) -> Path:
+        """从 start_path 开始向上查找 work 目录，返回 work 目录的父目录（即项目主目录）"""
+        cur = start_path.resolve()
+        while cur != cur.parent:
+            if cur.name == "work":
+                return cur.parent
+            cur = cur.parent
+        raise RuntimeError(f"未能从 {start_path} 向上找到 work 目录，请确认代码放在项目 work 目录下或其子目录！")

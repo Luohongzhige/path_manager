@@ -3,7 +3,8 @@
 A unified project directory helper with smart detection and folder creation.
 
 ```python
-from path_manager import PATH
+from path_manager_qiaoy import ProjectPath
+PATH = ProjectPath()
 PATH.init()
 print(PATH.DATA_PATH)
 ```
